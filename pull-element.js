@@ -89,8 +89,9 @@
 		return value
 	}
 
-	function getTranslateStyle(translateX, translateY) {
-		var translateValue = 'translate(' + translateX + 'px,' + translateY + 'px) translateZ(0)'
+	function getTranslateStyle(translateX, translateY, translateZ) {
+		var translateValue = translateZ ? 'translate(' + translateX + 'px,' + translateY + 'px) translateZ(0)' :
+			'translate(' + translateX + 'px,' + translateY + 'px)'
 		return {
 			transform: translateValue,
 			webkitTransform: translateValue,
@@ -161,6 +162,7 @@
 		transitionProperty: 'transform',
 		transitionDuration: '0.3s',
 		transitionTimingFunction: 'ease-out',
+		translateZ: true,
 	}
 
 	var isSupportPromise = typeof Promise === 'function'
@@ -229,7 +231,7 @@
 			extend(
 				this.target.style,
 				emptyTransitionStyle,
-				getTranslateStyle(translateX, translateY)
+				getTranslateStyle(translateX, translateY, this.options.translateZ)
 			)
 		},
 		animateTo: function(translateX, translateY, callback) {
@@ -237,7 +239,7 @@
 			var target = this.target
 			var transitionDuration = this.transitionDuration
 			var transitionStyle = this.transitionStyle
-			var translateStyle = getTranslateStyle(translateX, translateY)
+			var translateStyle = getTranslateStyle(translateX, translateY, this.options.translateZ)
 
 			state.translateX = translateX
 			state.translateY = translateY
@@ -304,7 +306,7 @@
 				axis: '',
 				action: '',
 			})
-			
+
 			if (options.detectScroll || options.detectScrollOnStart) {
 				extend(this.state, this.getScrollInfo())
 			}
@@ -369,7 +371,7 @@
 				translateX += transformValueByDamping(deltaX, options.damping)
 				translateY += transformValueByDamping(deltaY, options.damping)
 			}
-			
+
 			extend(state, {
 				clientX: clientX,
 				clientY: clientY,
@@ -424,7 +426,7 @@
 				translateX: state.translateX,
 				translateY: state.translateY,
 			})
-			
+
 			if (this.isPreventDefault) {
 				this.isPreventDefault = false
 				return
